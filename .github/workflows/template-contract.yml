@@ -1,0 +1,35 @@
+name: Pull-request template contract
+
+on:
+  pull_request:
+    paths:
+      - .github/pull_request_template.md
+      - .github/workflows/template-contract.yml
+      - scripts/validate_pull_request_template.py
+      - tests/test_validate_pull_request_template.py
+  push:
+    branches:
+      - main
+    paths:
+      - .github/pull_request_template.md
+      - .github/workflows/template-contract.yml
+      - scripts/validate_pull_request_template.py
+      - tests/test_validate_pull_request_template.py
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate organization PR template
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Run contract tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Validate checked-in template
+        run: python3 scripts/validate_pull_request_template.py

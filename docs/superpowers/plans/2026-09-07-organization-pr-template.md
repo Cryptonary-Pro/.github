@@ -29,19 +29,19 @@
 - Consumes: the canonical headings and test-contract fields enforced by `Cryptonary-Pro/Workspace`.
 - Produces: `validate_template(text: str) -> tuple[str, ...]` and a CLI that exits nonzero when the checked-in template is invalid.
 
-- [ ] **Step 1: Write tests first**
+- [x] **Step 1: Write tests first**
 
   Cover the checked-in canonical template, missing or reordered headings, duplicate declarations, missing assertion disclosure, and a missing test-contract table.
 
-- [ ] **Step 2: Verify the tests fail for the missing implementation**
+- [x] **Step 2: Verify the tests fail for the missing implementation**
 
   Run `python3 -m unittest discover -s tests -p 'test_*.py' -v` and confirm failure because the validator does not exist.
 
-- [ ] **Step 3: Add the minimal validator and canonical template**
+- [x] **Step 3: Add the minimal validator and canonical template**
 
   Implement exact structural checks with Python's standard library and add the eight-section Markdown template with guidance comments and the required four-column test table.
 
-- [ ] **Step 4: Verify the tests and validator pass**
+- [x] **Step 4: Verify the tests and validator pass**
 
   Run `python3 -m unittest discover -s tests -p 'test_*.py' -v` and `python3 scripts/validate_pull_request_template.py` with zero failures.
 
@@ -55,15 +55,15 @@
 - Consumes: the validator CLI from Task 1.
 - Produces: a GitHub Actions check on template-related pushes and pull requests, plus clear documentation that the QA App is the authoritative submitted-body gate.
 
-- [ ] **Step 1: Add the narrowly scoped workflow**
+- [x] **Step 1: Add the narrowly scoped workflow**
 
   Check out the repository, run the unit tests, and run the static template validator on changes to the template, validator, tests, or workflow.
 
-- [ ] **Step 2: Document precedence and enforcement**
+- [x] **Step 2: Document precedence and enforcement**
 
   Explain organization-default behavior, repository-local overrides, canonical source, and the distinction between static template validation and the blocking QA App.
 
-- [ ] **Step 3: Run final verification**
+- [x] **Step 3: Run final verification**
 
   Run both Python verification commands, inspect the diff, confirm the repository is public, and confirm the QA App is configured for all installed repositories.
 
