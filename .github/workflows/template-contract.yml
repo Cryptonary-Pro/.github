@@ -2,19 +2,9 @@ name: Pull-request template contract
 
 on:
   pull_request:
-    paths:
-      - .github/pull_request_template.md
-      - .github/workflows/template-contract.yml
-      - scripts/validate_pull_request_template.py
-      - tests/test_validate_pull_request_template.py
   push:
     branches:
       - main
-    paths:
-      - .github/pull_request_template.md
-      - .github/workflows/template-contract.yml
-      - scripts/validate_pull_request_template.py
-      - tests/test_validate_pull_request_template.py
 
 permissions:
   contents: read

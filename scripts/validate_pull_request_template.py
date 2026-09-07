@@ -24,19 +24,21 @@ REQUIRED_HEADINGS = (
 )
 
 TEST_DECLARATION = re.compile(
-    r"(?m)^[ \t]*(?:[-*+][ \t]+)?Test files changed[ \t]*:[ \t]*Yes/No[ \t]*$"
+    r"(?m)^[ ]{0,3}(?:[-*+][ \t]+)?"
+    r"Test files changed[ \t]*:[ \t]*Yes/No[ \t]*$"
 )
 ASSERTION_DISCLOSURE = re.compile(
-    r"(?m)^[ \t]*(?:[-*+][ \t]+)?Relaxed or removed assertions[ \t]*:[ \t]*\S.*$"
+    r"(?m)^[ ]{0,3}(?:[-*+][ \t]+)?"
+    r"Relaxed or removed assertions[ \t]*:[ \t]*\S.*$"
 )
 NO_TEST_RATIONALE = re.compile(
-    r"(?m)^[ \t]*(?:[-*+][ \t]+)?No-test rationale[ \t]*:[ \t]*.*$"
+    r"(?m)^[ ]{0,3}(?:[-*+][ \t]+)?No-test rationale[ \t]*:[ \t]*.*$"
 )
 TABLE_HEADER = re.compile(
-    r"(?m)^[ \t]*\| file \| change \| business behavior \| reason \|[ \t]*$"
+    r"(?m)^[ ]{0,3}\| file \| change \| business behavior \| reason \|[ \t]*$"
 )
 TABLE_SEPARATOR = re.compile(
-    r"(?m)^[ \t]*\| --- \| --- \| --- \| --- \|[ \t]*$"
+    r"(?m)^[ ]{0,3}\| --- \| --- \| --- \| --- \|[ \t]*$"
 )
 NONVISIBLE_HTML_CONTAINERS = (
     "head",

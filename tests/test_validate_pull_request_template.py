@@ -184,6 +184,33 @@ class PullRequestTemplateContractTests(unittest.TestCase):
             VALIDATOR.validate_template(template),
         )
 
+    def test_plain_indented_code_cannot_supply_test_contract_fields(self) -> None:
+        template = self.canonical_template()
+        for line in (
+            "Test files changed: Yes/No",
+            "| file | change | business behavior | reason |",
+            "| --- | --- | --- | --- |",
+            "Relaxed or removed assertions: None.",
+            "No-test rationale:",
+        ):
+            template = template.replace(line, f"    {line}", 1)
+
+        violations = VALIDATOR.validate_template(template)
+
+        self.assertIn(
+            "template must contain exactly one Test files changed: Yes/No declaration",
+            violations,
+        )
+        self.assertIn(
+            "template must contain one relaxed-or-removed-assertions disclosure",
+            violations,
+        )
+        self.assertIn("template must contain one No-test rationale field", violations)
+        self.assertIn(
+            "template must contain the canonical test-contract table",
+            violations,
+        )
+
     def test_missing_assertion_disclosure_is_rejected(self) -> None:
         template = self.canonical_template().replace(
             "Relaxed or removed assertions: None.",
