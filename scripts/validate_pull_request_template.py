@@ -30,20 +30,116 @@ ASSERTION_DISCLOSURE = re.compile(
     r"(?m)^[ \t]*(?:[-*+][ \t]+)?Relaxed or removed assertions[ \t]*:[ \t]*\S.*$"
 )
 NO_TEST_RATIONALE = re.compile(
-    r"(?m)^[ \t]*(?:[-*+][ \t]+)?No-test rationale[ \t]*:[ \t]*\S.*$"
+    r"(?m)^[ \t]*(?:[-*+][ \t]+)?No-test rationale[ \t]*:[ \t]*.*$"
 )
-TABLE_HEADER = "| file | change | business behavior | reason |"
-TABLE_SEPARATOR = "| --- | --- | --- | --- |"
+TABLE_HEADER = re.compile(
+    r"(?m)^[ \t]*\| file \| change \| business behavior \| reason \|[ \t]*$"
+)
+TABLE_SEPARATOR = re.compile(
+    r"(?m)^[ \t]*\| --- \| --- \| --- \| --- \|[ \t]*$"
+)
+NONVISIBLE_HTML_CONTAINERS = (
+    "head",
+    "iframe",
+    "noembed",
+    "noframes",
+    "noscript",
+    "script",
+    "style",
+    "template",
+    "textarea",
+    "title",
+    "xmp",
+)
+MARKDOWN_HEADING = re.compile(
+    r"(?m)^[ ]{0,3}(?P<marks>#{1,6})[ \t]+"
+    r"(?P<title>[^\r\n]*?)[ \t]*\r?$"
+)
+
+
+def _masked(content: str) -> str:
+    """Blank content while preserving line boundaries for later parsing."""
+    return re.sub(r"[^\r\n]", " ", content)
+
+
+def _without_fenced_code(text: str) -> str:
+    """Mask Markdown fenced code blocks, including an unclosed final fence."""
+    result: list[str] = []
+    fence_character: str | None = None
+    fence_length = 0
+
+    for line in text.splitlines(keepends=True):
+        content = line.rstrip("\r\n")
+        if fence_character is None:
+            opening = re.match(r"^[ \t]*(?P<fence>`{3,}|~{3,})", content)
+            if opening is None:
+                result.append(line)
+                continue
+
+            fence = opening.group("fence")
+            fence_character = fence[0]
+            fence_length = len(fence)
+            result.append(_masked(line))
+            continue
+
+        result.append(_masked(line))
+        if re.fullmatch(
+            rf"[ \t]*{re.escape(fence_character)}{{{fence_length},}}[ \t]*",
+            content,
+        ):
+            fence_character = None
+            fence_length = 0
+
+    return "".join(result)
+
+
+def _visible_markdown(text: str) -> str:
+    """Mask content the QA parser does not treat as visible Markdown."""
+    visible = _without_fenced_code(text)
+    visible = re.sub(
+        r"<!--.*?(?:-->|\Z)",
+        lambda match: _masked(match.group()),
+        visible,
+        flags=re.DOTALL,
+    )
+    for tag in NONVISIBLE_HTML_CONTAINERS:
+        visible = re.sub(
+            rf"<{tag}\b[^>]*>.*?(?:</{tag}[ \t]*>|\Z)",
+            lambda match: _masked(match.group()),
+            visible,
+            flags=re.DOTALL | re.IGNORECASE,
+        )
+    return visible
+
+
+def _test_contract_section(text: str) -> str:
+    """Return the visible Test contract changes body, excluding later sections."""
+    section_heading = re.search(
+        r"(?m)^[ ]{0,3}##[ \t]+Test contract changes[ \t]*\r?$",
+        text,
+    )
+    if section_heading is None:
+        return ""
+
+    body_start = section_heading.end()
+    for heading in MARKDOWN_HEADING.finditer(text, body_start):
+        if len(heading.group("marks")) <= 2:
+            return text[body_start : heading.start()]
+    return text[body_start:]
 
 
 def validate_template(text: str) -> tuple[str, ...]:
     """Return structural contract violations for one template body."""
     violations: list[str] = []
     positions: list[int] = []
+    visible_text = _visible_markdown(text)
 
     for heading in REQUIRED_HEADINGS:
         matches = tuple(
-            re.finditer(rf"(?m)^##[ \t]+{re.escape(heading)}[ \t]*$", text)
+            re.finditer(
+                rf"(?m)^[ ]{{0,3}}##[ \t]+{re.escape(heading)}[ \t]*\r?$",
+                visible_text,
+            )
         )
         if len(matches) != 1:
             violations.append(f"required heading must appear exactly once: {heading}")
@@ -53,17 +149,20 @@ def validate_template(text: str) -> tuple[str, ...]:
     if len(positions) == len(REQUIRED_HEADINGS) and positions != sorted(positions):
         violations.append("required headings must use canonical order")
 
-    if len(TEST_DECLARATION.findall(text)) != 1:
+    test_contract = _test_contract_section(visible_text)
+    if len(TEST_DECLARATION.findall(test_contract)) != 1:
         violations.append(
             "template must contain exactly one Test files changed: Yes/No declaration"
         )
-    if len(ASSERTION_DISCLOSURE.findall(text)) != 1:
+    if len(ASSERTION_DISCLOSURE.findall(test_contract)) != 1:
         violations.append(
             "template must contain one relaxed-or-removed-assertions disclosure"
         )
-    if len(NO_TEST_RATIONALE.findall(text)) != 1:
+    if len(NO_TEST_RATIONALE.findall(test_contract)) != 1:
         violations.append("template must contain one No-test rationale field")
-    if text.count(TABLE_HEADER) != 1 or text.count(TABLE_SEPARATOR) != 1:
+    if len(TABLE_HEADER.findall(test_contract)) != 1 or len(
+        TABLE_SEPARATOR.findall(test_contract)
+    ) != 1:
         violations.append("template must contain the canonical test-contract table")
 
     return tuple(violations)

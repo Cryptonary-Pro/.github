@@ -1,7 +1,7 @@
 <!--
 Organization-wide default for Cryptonary-Pro repositories without a local
-override. The canonical contract is maintained at:
-https://github.com/Cryptonary-Pro/Workspace/blob/main/governance/templates/pull-request.md
+override. This template mirrors the contract enforced by the organization-wide
+Cryptonary QA App.
 
 Replace guidance and example values with concrete information. Do not remove
 headings. The Cryptonary QA App validates the submitted body against the diff.

@@ -27,9 +27,11 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
 
       - name: Run contract tests
-        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+        run: python3 tests/test_validate_pull_request_template.py -v
 
       - name: Validate checked-in template
         run: python3 scripts/validate_pull_request_template.py

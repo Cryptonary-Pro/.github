@@ -35,7 +35,7 @@
 
 - [x] **Step 2: Verify the tests fail for the missing implementation**
 
-  Run `python3 -m unittest discover -s tests -p 'test_*.py' -v` and confirm failure because the validator does not exist.
+  Run `python3 tests/test_validate_pull_request_template.py -v` and confirm failure because the validator does not exist.
 
 - [x] **Step 3: Add the minimal validator and canonical template**
 
@@ -43,7 +43,7 @@
 
 - [x] **Step 4: Verify the tests and validator pass**
 
-  Run `python3 -m unittest discover -s tests -p 'test_*.py' -v` and `python3 scripts/validate_pull_request_template.py` with zero failures.
+  Run `python3 tests/test_validate_pull_request_template.py -v` and `python3 scripts/validate_pull_request_template.py` with zero failures.
 
 ### Task 2: Run validation automatically and document ownership
 
