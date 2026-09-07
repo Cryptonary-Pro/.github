@@ -146,6 +146,19 @@ class PullRequestTemplateContractTests(unittest.TestCase):
                     VALIDATOR.validate_template(template),
                 )
 
+    def test_nested_nonvisible_html_cannot_supply_test_contract_declaration(self) -> None:
+        template = self.canonical_template().replace(
+            "Test files changed: Yes/No",
+            "<template>\n<template></template>\n"
+            "Test files changed: Yes/No\n</template>",
+            1,
+        )
+
+        self.assertIn(
+            "template must contain exactly one Test files changed: Yes/No declaration",
+            VALIDATOR.validate_template(template),
+        )
+
     def test_higher_level_heading_closes_test_contract_section(self) -> None:
         template = self.canonical_template().replace(
             "## Test contract changes\n\nTest files changed: Yes/No",

@@ -95,6 +95,47 @@ def _without_fenced_code(text: str) -> str:
     return "".join(result)
 
 
+def _without_nonvisible_container(text: str, tag: str) -> str:
+    """Mask balanced, potentially nested instances of one nonvisible HTML tag."""
+    token = re.compile(
+        rf"<(?P<closing>/)?{re.escape(tag)}\b[^>]*>",
+        flags=re.IGNORECASE,
+    )
+    ranges: list[tuple[int, int]] = []
+    depth = 0
+    range_start = 0
+
+    for match in token.finditer(text):
+        if match.group("closing"):
+            if depth == 0:
+                continue
+            depth -= 1
+            if depth == 0:
+                ranges.append((range_start, match.end()))
+            continue
+
+        if match.group().rstrip().endswith("/>"):
+            if depth == 0:
+                ranges.append((match.start(), match.end()))
+            continue
+
+        if depth == 0:
+            range_start = match.start()
+        depth += 1
+
+    if depth:
+        ranges.append((range_start, len(text)))
+
+    result: list[str] = []
+    cursor = 0
+    for start, end in ranges:
+        result.append(text[cursor:start])
+        result.append(_masked(text[start:end]))
+        cursor = end
+    result.append(text[cursor:])
+    return "".join(result)
+
+
 def _visible_markdown(text: str) -> str:
     """Mask content the QA parser does not treat as visible Markdown."""
     visible = _without_fenced_code(text)
@@ -105,12 +146,7 @@ def _visible_markdown(text: str) -> str:
         flags=re.DOTALL,
     )
     for tag in NONVISIBLE_HTML_CONTAINERS:
-        visible = re.sub(
-            rf"<{tag}\b[^>]*>.*?(?:</{tag}[ \t]*>|\Z)",
-            lambda match: _masked(match.group()),
-            visible,
-            flags=re.DOTALL | re.IGNORECASE,
-        )
+        visible = _without_nonvisible_container(visible, tag)
     return visible
 
 
