@@ -67,6 +67,6 @@
 
   Run both Python verification commands, inspect the diff, confirm the repository is public, and confirm the QA App is configured for all installed repositories.
 
-- [ ] **Step 4: Commit, push, and open the separate PR**
+- [x] **Step 4: Commit, push, and open the separate PR**
 
   Use a QA-contract-compliant PR body with `Test files changed: Yes`, one table row for the changed Python test, and an explicit disclosure of relaxed or removed assertions.
