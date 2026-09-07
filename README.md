@@ -14,7 +14,9 @@ organization-installed Cryptonary QA GitHub App remains the authoritative,
 fail-closed validator of submitted pull-request bodies. Its internal contract
 is maintained alongside the QA implementation. The test in this repository
 protects the public default template itself from losing required headings or
-test-contract fields.
+test-contract fields. The QA App also reviews changes to this repository, so
+its blocking check is the cross-repository compatibility guard when the public
+template and runtime contract evolve.
 
 A repository-local pull-request template takes precedence over this default.
 Local overrides should therefore be avoided unless they are deliberately kept

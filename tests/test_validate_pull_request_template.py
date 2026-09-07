@@ -184,6 +184,18 @@ class PullRequestTemplateContractTests(unittest.TestCase):
             VALIDATOR.validate_template(template),
         )
 
+    def test_over_indented_closing_fence_keeps_following_heading_hidden(self) -> None:
+        template = self.canonical_template().replace(
+            "## Outcome",
+            "```markdown\n    ```\n## Outcome",
+            1,
+        )
+
+        self.assertIn(
+            "required heading must appear exactly once: Outcome",
+            VALIDATOR.validate_template(template),
+        )
+
     def test_plain_indented_code_cannot_supply_test_contract_fields(self) -> None:
         template = self.canonical_template()
         for line in (

@@ -86,7 +86,7 @@ def _without_fenced_code(text: str) -> str:
 
         result.append(_masked(line))
         if re.fullmatch(
-            rf"[ \t]*{re.escape(fence_character)}{{{fence_length},}}[ \t]*",
+            rf"[ ]{{0,3}}{re.escape(fence_character)}{{{fence_length},}}[ \t]*",
             content,
         ):
             fence_character = None
