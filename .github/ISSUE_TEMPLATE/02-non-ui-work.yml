@@ -1,0 +1,86 @@
+name: Non-UI work
+description: Plan backend, infrastructure, or other work with no UI impact; designs are not required.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only when no UI work is required. For UI impact or unknown impact, use the UI work form.
+        The organization backlog is [Cryptonary Roadmap](https://github.com/orgs/Cryptonary-Pro/projects/1).
+        Follow the [roadmap contract](https://github.com/Cryptonary-Pro/Workspace/blob/main/governance/roadmap.md).
+        Unknown information is allowed in Inbox/Triage and must be resolved before Ready.
+        If UI work emerges, add the UI form's design, approval-status, coverage, and acceptance evidence before treating the UI scope as Ready.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: Describe the intended member, business, or operational result. For bugs, include reproduction and expected behavior.
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Owner
+      description: Accountable human GitHub handle matching the primary assignee, or Unknown - resolve during triage.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source and references
+      description: Link the durable request, evidence, PRD, research, incident, or decision and other supporting references.
+    validations:
+      required: true
+  - type: dropdown
+    id: work-type
+    attributes:
+      label: Work Type
+      options:
+        - Product
+        - Bug
+        - Experiment
+        - Marketing
+        - Incident
+        - Operations
+        - Unknown - resolve during triage
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope, non-goals, and dependencies
+      description: State each explicitly. Include parent or related Issues where applicable; dependencies may be None. Add applicable Work Type details from the roadmap contract.
+      placeholder: |
+        Scope:
+        Non-goals:
+        Dependencies:
+        Work Type details:
+    validations:
+      required: true
+  - type: textarea
+    id: no-ui-impact
+    attributes:
+      label: UI impact - No, not applicable
+      description: Explain why this work changes no screens, user flows, or other UI behavior. Design evidence is Not applicable. If uncertain, use the UI work form instead.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Provide an observable completion checklist and expected verification evidence. For bugs, include regression coverage.
+    validations:
+      required: true
+  - type: textarea
+    id: measurement
+    attributes:
+      label: Success metric and measurement window
+      description: Include metric, known baseline, target, authoritative data source, start, and duration/end date; unresolved information may be Unknown - resolve during triage.
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Delivery Risk and rationale
+      description: Record R0/R1/R2/R3, reasoning, review requirements, and rollback/recovery expectation, or Unknown - resolve during triage. Existing repository and Delivery Risk approval controls still apply.
+    validations:
+      required: true

@@ -1,0 +1,134 @@
+name: UI work or UI impact to triage
+description: Plan work affecting screens or user flows, with linked or attached designs.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for UI work, UI bugs, or unknown UI impact. Non-UI work has a separate form.
+        The organization backlog is [Cryptonary Roadmap](https://github.com/orgs/Cryptonary-Pro/projects/1).
+        Follow the [roadmap contract](https://github.com/Cryptonary-Pro/Workspace/blob/main/governance/roadmap.md).
+        Unknown information is allowed in Inbox/Triage; UI work must not enter Ready without attached or linked designs and resolved design details.
+        Never invent designs or team approval. Existing repository and Delivery Risk approval controls still apply.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: Describe the intended member, business, or operational result. For bugs, include reproduction and expected behavior.
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Owner
+      description: Accountable human GitHub handle matching the primary assignee, or Unknown - resolve during triage.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source and references
+      description: Link the durable request, evidence, PRD, research, incident, or decision and other supporting references.
+    validations:
+      required: true
+  - type: dropdown
+    id: work-type
+    attributes:
+      label: Work Type
+      options:
+        - Product
+        - Bug
+        - Experiment
+        - Marketing
+        - Incident
+        - Operations
+        - Unknown - resolve during triage
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope, non-goals, and dependencies
+      description: State each explicitly. Include parent or related Issues where applicable; dependencies may be None. Add applicable Work Type details from the roadmap contract.
+      placeholder: |
+        Scope:
+        Non-goals:
+        Dependencies:
+        Work Type details:
+    validations:
+      required: true
+  - type: dropdown
+    id: ui-impact
+    attributes:
+      label: UI impact
+      options:
+        - Yes - UI work required
+        - Unknown - resolve during triage
+    validations:
+      required: true
+  - type: textarea
+    id: affected-ui
+    attributes:
+      label: Affected screens, routes, or flows
+      description: Identify the UI in scope, or Unknown - resolve during triage.
+    validations:
+      required: true
+  - type: textarea
+    id: designs
+    attributes:
+      label: Design attachments or URLs
+      description: Attach UI designs here or link accessible designs. A parent Issue reference must identify the designs covering this scope. If unavailable, enter Unknown - resolve during triage and keep the Issue in Inbox/Triage until attached or linked.
+    validations:
+      required: true
+  - type: textarea
+    id: design-version
+    attributes:
+      label: Exact design frames and version
+      description: List frame or screen identifiers and the design version or dated snapshot. A generic file URL alone is insufficient. Unknown - resolve during triage is allowed only before Ready.
+    validations:
+      required: true
+  - type: textarea
+    id: design-approval
+    attributes:
+      label: Team approval record
+      description: Record approver, decision link, and date, or explicitly state Pending - not approved or Unknown - resolve during triage. Do not infer approval. Existing Delivery Risk approval requirements apply.
+    validations:
+      required: true
+  - type: textarea
+    id: coverage
+    attributes:
+      label: States, viewports, locales, RTL, and translations
+      description: Specify coverage for each, or explain why not applicable. Unknown - resolve during triage must be resolved before Ready.
+      placeholder: |
+        Interaction states (including loading, empty, error, success):
+        Viewports:
+        Locales and translated content:
+        RTL:
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria and design comparison evidence
+      description: Provide an observable checklist mapped to the design frames/version. Plan screenshots or recordings across the applicable states, viewports, and locales for reviewer comparison. For bugs, include regression coverage.
+    validations:
+      required: true
+  - type: textarea
+    id: measurement
+    attributes:
+      label: Success metric and measurement window
+      description: Include metric, known baseline, target, authoritative data source, start, and duration/end date; unresolved information may be Unknown - resolve during triage.
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Delivery Risk and rationale
+      description: Record R0/R1/R2/R3, reasoning, review requirements, and rollback/recovery expectation, or Unknown - resolve during triage. Preserve existing repository controls.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        **Review requirement:** Compare implementation with these exact designs and record the evidence in the PR.
+        For missing designs, deviations, or additional UI/UX, raise a clear **NONBLOCKING** concern identifying the affected design and implementation and telling the **AI implementor to confirm team approval with the operator** and record the decision.
+        These concerns alone must not block automated QA or trigger a changes-requested review. Existing bug, security, and Delivery Risk controls still apply; avoid unrelated style-polish suggestions.
